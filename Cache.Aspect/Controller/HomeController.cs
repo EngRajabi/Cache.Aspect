@@ -15,6 +15,7 @@ namespace Cache.Aspect.Controller
         [HttpPost]
         public IActionResult GetName([FromBody]Param1 param)
         {
+            var g =_testService.GetName(param);
             return Ok(_testService.GetName(param));
         }
     }

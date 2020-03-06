@@ -4,7 +4,7 @@ namespace Cache.Aspect.Service
 {
     public interface ITestService
     {
-        string GetName(Param1 param);
+        Result GetName(Param1 param);
     }
 
     public class TestService : ITestService
@@ -15,10 +15,17 @@ namespace Cache.Aspect.Service
         }
 
         [CacheMethod]
-        public string GetName(Param1 param)
+        public Result GetName(Param1 param)
         {
-            return "Mohsen";
+            return new Result{A = "A", Param1 = param};
         }
+    }
+
+    [Serializable]
+    public class Result
+    {
+        public string A { get; set; }
+        public Param1 Param1 { get; set; }
     }
 
     [Serializable]
