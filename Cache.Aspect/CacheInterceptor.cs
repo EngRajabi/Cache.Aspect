@@ -9,7 +9,6 @@ namespace Cache.Aspect
 {
     public class CacheInterceptor : IInterceptor
     {
-        private static readonly object LockObject = new object();
         private readonly IDistributedCache _distributedCache;
 
         public CacheInterceptor(IDistributedCache distributedCache)
@@ -56,10 +55,7 @@ namespace Cache.Aspect
                     AbsoluteExpiration = absoluteExpiration
                 };
 
-                lock (LockObject)
-                {
-                    _distributedCache.Set(cacheKey, invocation.ReturnValue.ToByteArray(), cacheEntryOptions);
-                }
+                _distributedCache.Set(cacheKey, invocation.ReturnValue.ToByteArray(), cacheEntryOptions);
             }
         }
 
