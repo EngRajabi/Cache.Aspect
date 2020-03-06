@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Cache.Aspect
+namespace Cache.Aspect.Service
 {
     public interface ITestService
     {
@@ -17,7 +14,7 @@ namespace Cache.Aspect
             
         }
 
-        [CacheMethodAttribute]
+        [CacheMethod]
         public string GetName(Param1 param)
         {
             return "Mohsen";

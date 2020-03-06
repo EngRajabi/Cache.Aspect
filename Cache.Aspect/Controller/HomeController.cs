@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Cache.Aspect.Service;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cache.Aspect
+namespace Cache.Aspect.Controller
 {
     public class HomeController : ControllerBase
     {
