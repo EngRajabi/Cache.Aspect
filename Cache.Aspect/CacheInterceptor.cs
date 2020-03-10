@@ -21,34 +21,25 @@ namespace Cache.Aspect
             var cacheMethodAttribute = GetCacheMethodAttribute(invocation);
             if (cacheMethodAttribute == null)
             {
-                // متد جاری توسط ویژگی کش شدن مزین نشده است
-                // بنابراین آن‌را اجرا کرده و کار را خاتمه می‌دهیم
                 invocation.Proceed();
                 return;
             }
 
-            // دراینجا مدت زمان کش شدن متد از ویژگی کش دریافت می‌شود
             var cacheDuration = ((CacheMethodAttribute)cacheMethodAttribute).SecondsToCache;
 
-            // برای ذخیره سازی اطلاعات در کش نیاز است یک کلید منحصربفرد را
-            //  بر اساس نام متد و پارامترهای ارسالی به آن تهیه کنیم
             var cacheKey = GetCacheKey(invocation);
 
             var cachedResult = _distributedCache.Get(cacheKey);
             if (cachedResult != null)
             {
-                // اگر نتیجه بر اساس کلید تشکیل شده در کش موجود بود
-                // همان را بازگشت می‌دهیم
                 invocation.ReturnValue = cachedResult.ToObject();
             }
             else
             {
-                // در غیر اینصورت ابتدا متد را اجرا کرده
                 invocation.Proceed();
                 if (invocation.ReturnValue == null)
                     return;
 
-                // سپس نتیجه آن‌را کش می‌کنیم
                 var absoluteExpiration = new DateTimeOffset(DateTime.Now.AddMinutes(cacheDuration));
                 var cacheEntryOptions = new DistributedCacheEntryOptions
                 {
@@ -75,7 +66,6 @@ namespace Cache.Aspect
                            $"{invocation.Method.Name}" +
                            $"{Encoding.UTF8.GetString(byteArray)}";
 
-            // کار کردن با هش سریعتر خواهد بود
             var md5 = MD5.Create();
             var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(cacheKey));
             return Encoding.UTF8.GetString(hash);
