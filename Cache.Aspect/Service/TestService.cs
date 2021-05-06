@@ -14,7 +14,7 @@ namespace Cache.Aspect.Service
             
         }
 
-        [CacheMethod]
+        [CacheMethod(100)]
         public Result GetName(Param1 param)
         {
             return new Result{A = "A", Param1 = param};
@@ -26,6 +26,7 @@ namespace Cache.Aspect.Service
     {
         public string A { get; set; }
         public Param1 Param1 { get; set; }
+        public DateTime DateTime { get; set; } = DateTime.Now;
     }
 
     [Serializable]

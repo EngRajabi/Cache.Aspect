@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Autofac.Extensions.DependencyInjection;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 
 namespace Cache.Aspect
 {
@@ -15,20 +9,16 @@ namespace Cache.Aspect
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
-            //var host = new WebHostBuilder()
-            //    .UseKestrel()
-            //    .ConfigureServices(services => services.AddAutofac())
-            //    .UseContentRoot(Directory.GetCurrentDirectory())
-            //    .UseIISIntegration()
-            //    .UseStartup<Startup>()
-            //    .Build();
+            var host = Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureWebHostDefaults(webHostBuilder => {
+                    webHostBuilder
+                        .UseStartup<Startup>();
+                })
+                .Build();
 
-            //host.Run();
+            host.Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
     }
 }

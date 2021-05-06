@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Castle.DynamicProxy;
@@ -32,7 +31,8 @@ namespace Cache.Aspect
             var cachedResult = _distributedCache.Get(cacheKey);
             if (cachedResult != null)
             {
-                invocation.ReturnValue = cachedResult.ToObject();
+                var lz4Decompress = cachedResult.Lz4Decompress();
+                invocation.ReturnValue = lz4Decompress.ToObject();
             }
             else
             {
@@ -46,7 +46,9 @@ namespace Cache.Aspect
                     AbsoluteExpiration = absoluteExpiration
                 };
 
-                _distributedCache.Set(cacheKey, invocation.ReturnValue.ToByteArray(), cacheEntryOptions);
+                var byteArray = invocation.ReturnValue.ToByteArray();
+                var lz4Compress = byteArray.Lz4Compress();
+                _distributedCache.Set(cacheKey, lz4Compress, cacheEntryOptions);
             }
         }
 
@@ -66,9 +68,9 @@ namespace Cache.Aspect
                            $"{invocation.Method.Name}" +
                            $"{Encoding.UTF8.GetString(byteArray)}";
 
-            var md5 = MD5.Create();
+            using var md5 = MD5.Create();
             var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(cacheKey));
-            return Encoding.UTF8.GetString(hash);
+            return Encoding.UTF8.GetString(hash).ToBase64Encode();
         }
     }
 }
