@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cache.Aspect.Controller
 {
+    [ApiController]
+    [Route("[controller]/[action]")]
     public class HomeController : ControllerBase
     {
         private readonly ITestService _testService;
