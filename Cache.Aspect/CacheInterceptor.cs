@@ -31,8 +31,10 @@ namespace Cache.Aspect
             var cachedResult = _distributedCache.Get(cacheKey);
             if (cachedResult != null)
             {
-                var lz4Decompress = cachedResult.Lz4Decompress();
-                invocation.ReturnValue = lz4Decompress.ToObject();
+                //var lz4Decompress = cachedResult.Lz4Decompress();
+                var returnType = invocation.Method.ReturnType;
+                //var item = Activator.CreateInstance(returnType);
+                invocation.ReturnValue = cachedResult.DeserializeMessagePackLz4(returnType);
             }
             else
             {
@@ -46,9 +48,9 @@ namespace Cache.Aspect
                     AbsoluteExpiration = absoluteExpiration
                 };
 
-                var byteArray = invocation.ReturnValue.ToByteArray();
-                var lz4Compress = byteArray.Lz4Compress();
-                _distributedCache.Set(cacheKey, lz4Compress, cacheEntryOptions);
+                var byteArray = invocation.ReturnValue.SerializeMessagePackLz4();
+               // var lz4Compress = byteArray.Lz4Compress();
+                _distributedCache.Set(cacheKey, byteArray, cacheEntryOptions);
             }
         }
 

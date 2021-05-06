@@ -65,6 +65,13 @@ namespace Cache.Aspect
             return MessagePackSerializer.Deserialize<T>(bytes, lz4Options);
         }
 
+        public static object DeserializeMessagePackLz4(this byte[] bytes, Type type)
+        {
+            var lz4Options =
+                MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray);
+            return MessagePackSerializer.Deserialize(type, bytes, lz4Options);
+        }
+
         public static string ToBase64Encode(this string plainText)
         {
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
